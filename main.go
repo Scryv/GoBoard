@@ -49,4 +49,5 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 func handleSignup(w http.ResponseWriter, r *http.Request) {
 	username := r.PostFormValue("username")
 	password := r.PostFormValue("password")
+	log.Println("These where used: ", username, password)
 }
