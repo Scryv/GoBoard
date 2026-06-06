@@ -14,6 +14,8 @@ func main() {
 	router.HandleFunc("/{$}", handleRoot)
 	router.HandleFunc("/auth/login", handleLogin)
 	router.HandleFunc("/auth/signup", handleSignup)
+	router.HandleFunc("/login", login)
+	router.HandleFunc("/signup", signup)
 
 	log.Println("Listning")
 	err := http.ListenAndServe(":3000", router)
@@ -27,12 +29,12 @@ func handleRoot(w http.ResponseWriter, _ *http.Request) {
 	index.Execute(w, nil)
 }
 
-func handleLogin(w http.ResponseWriter, _ *http.Request) {
+func login(w http.ResponseWriter, _ *http.Request) {
 	login := template.Must(template.ParseFiles("templates/login.html"))
 	login.Execute(w, nil)
 }
 
-func handleSignup(w http.ResponseWriter, _ *http.Request) {
+func signup(w http.ResponseWriter, _ *http.Request) {
 	signup := template.Must(template.ParseFiles("templates/signup.html"))
 	signup.Execute(w, nil)
 }
