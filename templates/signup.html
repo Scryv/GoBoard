@@ -26,15 +26,15 @@
                   <h4 class="mt-3 mb-4">Welcome To GoBoard</h4>
                 </div> --> 
 
-                <form hx-post="/auth/signin" method="POST">
+                <form hx-post="/auth/signin">
                   <p>Please Fill in to create account</p>
 
                   <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Username" required>
+                    <input type="text" class="form-control" placeholder="Username" name="username" required>
                   </div>
 
                   <div class="mb-3">
-                    <input type="password" class="form-control" placeholder="Password" required>
+                    <input type="password" class="form-control" placeholder="Password" name="password" required>
                   </div>
 
                   <button type="submit" class="btn btn-primary w-100 mb-2">

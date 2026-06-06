@@ -38,3 +38,15 @@ func signup(w http.ResponseWriter, _ *http.Request) {
 	signup := template.Must(template.ParseFiles("templates/signup.html"))
 	signup.Execute(w, nil)
 }
+
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	username := r.PostFormValue("username")
+	password := r.PostFormValue("password")
+	log.Println("Trying to log in as: ", username)
+	log.Println(password)
+}
+
+func handleSignup(w http.ResponseWriter, r *http.Request) {
+	username := r.PostFormValue("username")
+	password := r.PostFormValue("password")
+}
