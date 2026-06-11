@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "fmt"
-	"github.cm/golang-jwt/jwt/v5"
+	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"html/template"
 	"log"
 	"net/http"
@@ -29,10 +29,12 @@ func main() {
 	}
 }
 
-func handleRoot(w http.ResponseWriter, _ *http.Request) {
+func handleRoot(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("access_token")
 	if err != nil {
 		log.Println("No Cookie Found")
+		index := template.Must(template.ParseFiles("templates/index.html"))
+		index.Execute(w, nil)
 		return
 	}
 	err = verifyToken(cookie.Value)
@@ -41,10 +43,6 @@ func handleRoot(w http.ResponseWriter, _ *http.Request) {
 		http.Redirect(w, r, "/error", http.StatusSeeOther)
 		return
 	}
-	fmt.Fprintf(w, "Excuse me sir there has been something you have confused me for")
-	fmt.Fprintf(w, "Cookie is Found: %s = %s", cookie.Name, cookie.Value)
-	index := template.Must(template.ParseFiles("templates/index.html"))
-	index.Execute(w, nil)
 }
 
 func login(w http.ResponseWriter, _ *http.Request) {
@@ -60,7 +58,7 @@ func signup(w http.ResponseWriter, _ *http.Request) {
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	username := r.PostFormValue("username")
 	password := r.PostFormValue("password")
-	log.Println("Trying to log in as: ", username)
+	log.Println("Trying to log in as: ", username, password)
 	log.Println(password)
 
 	tkn, _ := createToken(username)
@@ -74,14 +72,16 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.SetCookie(w, &cookie)
-	fmt.Fprintln(w, "Cookie has been set!")
+	fmt.Fprintln(w, "Cooker set")
 }
 
 func handleSignup(w http.ResponseWriter, r *http.Request) {
 	username := r.PostFormValue("username")
 	password := r.PostFormValue("password")
-	log.Println("These where used: ", username, password)
-	http.Redirect(w, r, "/login", http.StatusSeeOther)
+	log.Println("These where used to make account: ", username, password)
+	if len(password) > 0 && len(username) > 0 {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
 }
 
 func createToken(username string) (string, error) {
