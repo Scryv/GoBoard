@@ -3,16 +3,28 @@ package main
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/joho/godotenv"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
-var secretKey = []byte("SuperSecretKeyFr") //here as placeholder will be more secure later
+var tkk []byte
+var ygap string
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
+	tkk := []byte(os.Getenv("TKN_K"))
+	ygap := os.Getenv("YGAP_K")
+
+	log.Println(ygap)
+	log.Println(tkk)
 	router := http.NewServeMux()
 
 	router.HandleFunc("/{$}", handleRoot)
@@ -23,7 +35,7 @@ func main() {
 	router.HandleFunc("/error", erreur)
 
 	log.Println("Listning")
-	err := http.ListenAndServe(":3000", router)
+	err = http.ListenAndServe(":3000", router)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,6 +55,7 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/error", http.StatusSeeOther)
 		return
 	}
+	log.Println("Sir There has been a cookie detected")
 }
 
 func login(w http.ResponseWriter, _ *http.Request) {
@@ -91,7 +104,7 @@ func createToken(username string) (string, error) {
 			"exp":      time.Now().Add(time.Hour * 24).Unix(),
 		})
 
-	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := token.SignedString(tkk)
 	if err != nil {
 		return "", err
 	}
@@ -104,7 +117,7 @@ func erreur(w http.ResponseWriter, _ *http.Request) {
 
 func verifyToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
+		return tkk, nil
 	})
 
 	if err != nil {
